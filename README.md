@@ -1,32 +1,32 @@
-# Итоговый проект: двухсервисная система LLM-консультаций
+# Двухсервисная система LLM-консультаций
 
 Проект реализует учебную микросервисную систему из двух независимых сервисов:
 
-1. **Auth Service** — FastAPI-сервис регистрации, логина и выпуска JWT.
-2. **Bot Service** — Telegram-бот на aiogram, который принимает JWT, проверяет его без обращения к базе Auth Service и отправляет LLM-запросы через RabbitMQ + Celery.
+1. **Auth Service** - FastAPI-сервис регистрации, логина и выпуска JWT
+2. **Bot Service** - Telegram-бот на aiogram, который принимает JWT, проверяет его без обращения к базе Auth Service и отправляет LLM-запросы через RabbitMQ
 
 Дополнительно используются:
 
-- **SQLite** — база пользователей Auth Service.
-- **Redis** — хранение JWT, привязанного к Telegram user_id, и result backend для Celery.
-- **RabbitMQ** — брокер задач Celery.
-- **OpenRouter** — LLM API.
-- **uv** — менеджер окружения и зависимостей.
-- **pytest / pytest-asyncio / respx / fakeredis** — тестирование.
+- **SQLite** - база пользователей Auth Service
+- **Redis** - хранение JWT, привязанного к Telegram user_id, и result backend для Celery
+- **RabbitMQ** - брокер задач Celery
+- **OpenRouter** - LLM API
+- **uv** - менеджер окружения и зависимостей
+- **pytest** — тестирование
 
 ---
 
 ## Пользовательский сценарий
 
-1. Пользователь регистрируется в Auth Service.
-2. Пользователь логинится и получает JWT.
-3. Пользователь отправляет JWT боту через `/token <jwt>`.
-4. Бот сохраняет JWT в Redis.
-5. Пользователь отправляет вопрос.
-6. Бот проверяет JWT.
-7. Бот публикует задачу в RabbitMQ.
-8. Celery worker вызывает OpenRouter.
-9. Worker отправляет ответ в Telegram.
+1. Пользователь регистрируется в Auth Service
+2. Пользователь логинится и получает JWT
+3. Пользователь отправляет JWT боту через `/token <jwt>`
+4. Бот сохраняет JWT в Redis
+5. Пользователь отправляет вопрос
+6. Бот проверяет JWT
+7. Бот публикует задачу в RabbitMQ
+8. Celery worker вызывает OpenRouter
+9. Worker отправляет ответ в Telegram
 
 ## Тестирование
 
@@ -38,8 +38,4 @@
 - негативные тесты Auth Service;
 - тесты JWT-проверки Bot Service;
 - тесты Telegram handlers с fakeredis;
-- тест OpenRouter-клиента через respx.
-
-## Вывод
-
-Проект соответствует архитектуре разделения ответственности: Auth Service выпускает JWT, Bot Service только проверяет JWT, а LLM-запросы выполняются асинхронно через RabbitMQ и Celery.
+- тест OpenRouter-клиента через respx
